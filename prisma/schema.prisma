@@ -1,0 +1,156 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlserver"
+  url      = env("DATABASE_URL")
+}
+
+model autenticacion {
+  autenticacion_id String   @id @default(uuid())
+  bearer           String   @db.VarChar(100)
+  fecha_creacion   DateTime @db.DateTime
+  activo           Boolean  @db.Bit
+}
+
+model api_envio {
+  api_envio_id   String   @id @default(uuid())
+  codigo_envio   String   @unique
+  tipo_peticion  String   @db.VarChar(10)
+  url            String   @db.VarChar(150)
+  parametros     String   @db.VarChar(max)
+  llave          String   @db.VarChar(max)
+  cabeceras      String   @db.VarChar(max)
+  tipo_contenido String   @db.VarChar(max)
+  cuerpo         String   @db.VarChar(max)
+  respuesta      String   @db.VarChar(max)
+  agente         String   @db.VarChar(150)
+  fecha_creacion DateTime @db.DateTime
+  estatus        Int      @db.Int
+}
+
+model error {
+  error_id       String   @id @default(uuid())
+  codigo         String   @db.VarChar(10)
+  linea          Int      @db.Int
+  objeto         String   @db.VarChar(max)
+  mensaje        String   @db.VarChar(max)
+  servidor       String   @db.VarChar(150)
+  fecha_registro DateTime @db.DateTime
+  codigo_envio   String   @unique
+}
+
+model usuario {
+  usuario_id               String                @id @default(uuid())
+  dni                      String                @db.VarChar(8)
+  nombre                   String                @db.VarChar(150)
+  apellido_paterno         String                @db.VarChar(150)
+  apellido_materno         String                @db.VarChar(150)
+  correo                   String                @unique @db.VarChar(150)
+  usuario                  String                @unique @db.VarChar(150)
+  contrasenia              String?               @db.VarChar(150)
+  foto                     String                @db.VarChar(max)
+  direccion                String                @unique @db.VarChar(500)
+  telefono                 String                @db.VarChar(30)
+  fecha_registro           DateTime              @db.DateTime
+  activo                   Boolean               @db.Bit
+  fk_privilegio            String                @unique
+  cls_privilegio           privilegio            @relation(fields: [fk_privilegio], references: [privilegio_id])
+  cls_postulante           postulante?
+  lst_carrera              carrera?
+  cls_postulante_historial postulante_historial?
+  cls_carrera_historial    carrera_historial?
+}
+
+model privilegio {
+  privilegio_id  String   @id @default(uuid())
+  nombre         String   @unique @db.VarChar(50)
+  activo         Boolean  @db.Bit
+  abreviatura    String   @unique @db.VarChar(3)
+  fecha_registro DateTime @db.DateTime
+  lst_usuario    usuario?
+}
+
+model operador {
+  operador_id    String       @id @default(uuid())
+  nombre         String       @db.VarChar(15)
+  activo         Boolean      @db.Bit
+  fecha_registro DateTime     @db.DateTime
+  lst_operador   postulante[]
+}
+
+model postulante_estado {
+  postulante_estado_id String      @id @default(uuid())
+  abreviatura          String      @db.VarChar(4)
+  nombre               String      @db.VarChar(15)
+  activo               Boolean     @db.Bit
+  fecha_registro       DateTime    @db.DateTime
+  postulante           postulante?
+}
+
+model postulante {
+  postulante_id            String                 @id @default(uuid())
+  dni                      String                 @unique @db.VarChar(8)
+  nombre                   String                 @db.VarChar(150)
+  apellido_paterno         String                 @db.VarChar(150)
+  apellido_materno         String                 @db.VarChar(150)
+  direccion                String                 @db.VarChar(300)
+  telefono                 String                 @db.VarChar(9)
+  observacion              String                 @db.VarChar(500)
+  activo                   Boolean                @db.Bit
+  fecha_registro           DateTime               @db.DateTime
+  fecha_actualizacion      DateTime               @db.DateTime
+  fk_postulante_estado     String                 @unique
+  fk_operador              String                 @unique
+  fk_usuario               String                 @unique
+  cls_usuario              usuario                @relation(fields: [fk_usuario], references: [usuario_id])
+  cls_operador             operador               @relation(fields: [fk_operador], references: [operador_id])
+  cls_postulante_estado    postulante_estado      @relation(fields: [fk_postulante_estado], references: [postulante_estado_id])
+  lst_postulante_carrera   postulante_carrera[]
+  lst_postulante_historial postulante_historial[]
+}
+
+model postulante_historial {
+  postulante_historial_id String     @id @default(uuid())
+  fecha_registro          DateTime   @db.DateTime
+  fk_postulante           String     @unique
+  fk_usuario              String     @unique
+  cls_postulante          postulante @relation(fields: [fk_postulante], references: [postulante_id], onUpdate: NoAction)
+  cls_usuario             usuario    @relation(fields: [fk_usuario], references: [usuario_id], onUpdate: NoAction)
+}
+
+model carrera {
+  carrera_id             String              @id @default(uuid())
+  nombre                 String              @db.VarChar(45)
+  descripcion            String              @db.VarChar(300)
+  activo                 Boolean             @db.Bit
+  fecha_registro         DateTime            @db.DateTime
+  fecha_actualizacion    DateTime            @db.DateTime
+  fk_usuario             String              @unique
+  cls_usuario            usuario             @relation(fields: [fk_usuario], references: [usuario_id])
+  cls_postulante_carrera postulante_carrera?
+  lst_carrera_historial  carrera_historial[]
+}
+
+model carrera_historial {
+  carrera_historial_id String   @id @default(uuid())
+  fecha_registro       DateTime @db.DateTime
+  fk_carrera           String   @unique
+  fk_usuario           String   @unique
+  cls_carrera          carrera  @relation(fields: [fk_carrera], references: [carrera_id], onUpdate: NoAction)
+  cls_usuario          usuario  @relation(fields: [fk_usuario], references: [usuario_id], onUpdate: NoAction)
+}
+
+model postulante_carrera {
+  postulante_carrera_id String     @id @default(uuid())
+  numero_opcion         Int        @db.Int
+  activo                Boolean    @db.Bit
+  fk_postulante         String     @unique
+  fk_carrera            String     @unique
+  cls_postulante        postulante @relation(fields: [fk_postulante], references: [postulante_id], onUpdate: NoAction)
+  cls_carrera           carrera    @relation(fields: [fk_carrera], references: [carrera_id], onUpdate: NoAction)
+}
