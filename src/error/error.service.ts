@@ -3,15 +3,16 @@ import { Response } from 'express';
 import { prisma } from 'src/bd/config.bd';
 import { ErrorPersonalizado, ErrorProps } from './dto/error.response.dto';
 import { Prisma } from '@prisma/client';
-import { UtilsService } from 'src/utils/utils.service';
 import { RespuestaService } from 'src/respuesta/respuesta.service';
 
 @Injectable()
-export class ErrorService {
-  constructor(
-    private srvRespuesta: RespuestaService<null>,
-    private srvUtils: UtilsService,
-  ) {}
+export class ErrorService extends RespuestaService<null> {
+  obtenerFechaLocal = (): string => {
+    const local = new Date();
+    local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
+    return local.toJSON();
+  };
+
   obtenerArchivoError(error: any): string {
     const stackTrace = error.stack;
     const fileNameMatches = stackTrace.match(/at\s+.+\((.+):\d+:\d+\)/);
@@ -37,7 +38,7 @@ export class ErrorService {
       objeto: '',
       mensaje: '',
       servidor: '',
-      fecha_registro: this.srvUtils.obtenerFechaLocal(),
+      fecha_registro: this.obtenerFechaLocal(),
     };
 
     if (error instanceof ErrorPersonalizado) {
@@ -71,14 +72,6 @@ export class ErrorService {
       errorProps.servidor = 'CODE';
     }
 
-    // this.srvRespuesta.respuestaValidacion(codigo, {
-    //   isValidate: errorProps.esValidacion,
-    //   code: errorProps.esValidacion ? errorProps.codigo : '0',
-    //   message: errorProps.esValidacion
-    //     ? errorProps.mensaje
-    //     : `Hubo un error, brínda el siguiente código al administrador del sistema: [${codigo_envio}] `,
-    // });
-
     try {
       await prisma.error.create({
         data: {
@@ -92,7 +85,7 @@ export class ErrorService {
         },
       });
 
-      res.status(codigo).json(this.srvRespuesta);
+      res.status(codigo).json(RespuestaService);
     } catch (error) {
       console.log(error);
     }
@@ -108,7 +101,7 @@ export class ErrorService {
           objeto: this.obtenerArchivoError(error),
           mensaje: error.message,
           servidor: error.parent.serverName,
-          fecha_registro: this.srvUtils.obtenerFechaLocal(),
+          fecha_registro: this.obtenerFechaLocal(),
         },
       });
     } catch (error) {

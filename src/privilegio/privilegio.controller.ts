@@ -1,28 +1,31 @@
 import { Controller, Get, HttpCode } from '@nestjs/common';
 import { PrivilegioService } from './privilegio.service';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
-import { Respuesta } from 'src/respuesta/dto/respuesta.dto';
 import { RespuestaService } from 'src/respuesta/respuesta.service';
 import { Privilegio } from './dto/privilegio.response.dto';
 
 @Controller('privilegio')
 @ApiTags('privilegio')
 export class PrivilegioController {
-  constructor(
-    private srvPrivilegio: PrivilegioService,
-    private srvRespListarGrupal: RespuestaService<Privilegio[]>,
-  ) {}
+  constructor(private srvPrivilegio: PrivilegioService) {}
 
   @Get('listar_grupal')
   @HttpCode(200)
   @ApiOkResponse({
     description: 'The user records',
-    type: Respuesta<Privilegio[]>,
+    isArray: false,
+    type: RespuestaService<Privilegio[]>,
   })
-  async listarGrupal(): Promise<Respuesta<Privilegio[]>> {
-    return this.srvRespListarGrupal.respuestaCorrecta(
-      await this.srvPrivilegio.listarGrupal(),
-    );
+  async listarGrupal(): Promise<RespuestaService<Privilegio[]>> {
+    return {
+      code: 200,
+      data: await this.srvPrivilegio.listarGrupal(),
+      error: {
+        code: '0',
+        isValidate: false,
+        message: '',
+      },
+    };
   }
 
   // @Get('listar_individual')
