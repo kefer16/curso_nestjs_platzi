@@ -1,9 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { prisma } from 'src/bd/config.bd';
-import { Privilegio } from './dto/privilegio.response';
+import { Privilegio } from './dto/privilegio.response.dto';
+import { RespuestaService } from 'src/respuesta/respuesta.service';
 
 @Injectable()
-export class PrivilegioService {
+export class PrivilegioService extends RespuestaService<Privilegio> {
   async listarGrupal(): Promise<Privilegio[]> {
     return await prisma.privilegio.findMany({
       select: {
