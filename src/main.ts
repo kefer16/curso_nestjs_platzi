@@ -8,6 +8,9 @@ async function bootstrap() {
     .setTitle('API ISTENE')
     .setDescription('API Rest para uso exclusivo del instituto Nueva Esperanza')
     .setVersion('1.0')
+    .addServer('http//localhost:3000', 'local')
+    .addBearerAuth()
+    .setExternalDoc('JSON', 'api-json')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);

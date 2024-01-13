@@ -3,10 +3,9 @@ import { Response } from 'express';
 import { prisma } from 'src/bd/config.bd';
 import { ErrorPersonalizado, ErrorProps } from './dto/error.response.dto';
 import { Prisma } from '@prisma/client';
-import { RespuestaService } from 'src/respuesta/respuesta.service';
 
 @Injectable()
-export class ErrorService extends RespuestaService<null> {
+export class ErrorService {
   obtenerFechaLocal = (): string => {
     const local = new Date();
     local.setMinutes(local.getMinutes() - local.getTimezoneOffset());
@@ -85,7 +84,7 @@ export class ErrorService extends RespuestaService<null> {
         },
       });
 
-      res.status(codigo).json(RespuestaService);
+      // res.status(codigo).json(RespuestaService);
     } catch (error) {
       console.log(error);
     }
