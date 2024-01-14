@@ -9,16 +9,38 @@ import { GlobalMiddleware } from './global/global.middleware';
 import { UtilsService } from './utils/utils.service';
 import { ErrorController } from './error/error.controller';
 import { ErrorService } from './error/error.service';
+import { CarreraController } from './carrera/carrera.controller';
+import { CarreraService } from './carrera/carrera.service';
+import { RespuestaService } from './respuesta/respuesta.service';
+import { OperadorService } from './operador/operador.service';
+import { OperadorController } from './operador/operador.controller';
+import { PostulanteEstadoController } from './postulante-estado/postulante-estado.controller';
+import { PostulanteEstadoService } from './postulante-estado/postulante-estado.service';
+import { PostulanteService } from './postulante/postulante.service';
+import { PostulanteController } from './postulante/postulante.controller';
 
 @Module({
   imports: [UsuarioModule],
-  controllers: [PrivilegioController, ApiEnvioController, ErrorController],
+  controllers: [
+    PrivilegioController,
+    ApiEnvioController,
+    ErrorController,
+    CarreraController,
+    OperadorController,
+    PostulanteEstadoController,
+    PostulanteController,
+  ],
   providers: [
     PrivilegioService,
     ErrorService,
     ApiEnvioService,
     GlobalService,
     UtilsService,
+    CarreraService,
+    RespuestaService,
+    OperadorService,
+    PostulanteEstadoService,
+    PostulanteService,
   ],
 })
 export class AppModule implements NestModule {
