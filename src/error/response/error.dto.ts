@@ -5,16 +5,16 @@ export class ErrorPersonalizado extends Error {
   }
 }
 
-export class ErrorEntity {
+export class ErrorDto {
   isValidate: boolean;
   code: string;
   message: string;
 
-  // constructor(_isValidate: boolean, _code: string, _message: string) {
-  //   this.isValidate = _isValidate;
-  //   this.code = _code;
-  //   this.message = _message;
-  // }
+  constructor(_isValidate: boolean, _code: string, _message: string) {
+    this.isValidate = _isValidate;
+    this.code = _code;
+    this.message = _message;
+  }
 }
 
 export interface ErrorProps {

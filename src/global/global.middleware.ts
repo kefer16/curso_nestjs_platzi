@@ -16,12 +16,12 @@ export class GlobalMiddleware implements NestMiddleware {
     const code_send = uuidv4();
     try {
       prisma.$connect;
-      await this.srvGlobal.registarIndividualRequest(code_send, req);
+      // await this.srvGlobal.registarIndividualRequest(code_send, req);
       next();
     } catch (error: any) {
-      await this.srvError.grabarError(400, code_send, error, res);
+      await this.srvError.grabarError(400, code_send, error);
     } finally {
-      await this.srvGlobal.registrarIndividualResponse(code_send, res);
+      // await this.srvGlobal.registrarIndividualResponse(code_send, res);
       prisma.$disconnect;
     }
   }

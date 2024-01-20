@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { RespuestaDto } from './response/respuesta.dto';
-import { ErrorEntity } from 'src/error/dto/error.response.dto';
+import { ErrorDto } from 'src/error/response/error.dto';
 
 @Injectable()
 export class RespuestaService<TData> {
@@ -8,7 +8,7 @@ export class RespuestaService<TData> {
     const result = new RespuestaDto<TData>();
     result.code = 200;
     result.data = _data;
-    result.error = new ErrorEntity();
+    result.error = new ErrorDto(false, '0', '');
     return result;
   }
 }

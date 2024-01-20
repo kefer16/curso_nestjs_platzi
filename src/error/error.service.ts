@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { Response } from 'express';
 import { prisma } from 'src/bd/config.bd';
-import { ErrorPersonalizado, ErrorProps } from './dto/error.response.dto';
+import { ErrorPersonalizado, ErrorProps } from './response/error.dto';
 import { Prisma } from '@prisma/client';
 
 @Injectable()
@@ -24,12 +23,7 @@ export class ErrorService {
     }
   }
 
-  async grabarError(
-    codigo: number,
-    codigo_envio: string,
-    error: any,
-    res: Response,
-  ) {
+  async grabarError(codigo: number, codigo_envio: string, error: any) {
     const errorProps: ErrorProps = {
       esValidacion: false,
       codigo: '',

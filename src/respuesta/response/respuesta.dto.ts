@@ -1,10 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { ErrorEntity } from 'src/error/dto/error.response.dto';
+import { ErrorDto } from 'src/error/response/error.dto';
 
 export class RespuestaDto<TData> {
-  @ApiProperty()
   code: number;
   data: TData[] | TData;
-  @ApiProperty()
-  error: ErrorEntity;
+  error: ErrorDto;
 }
