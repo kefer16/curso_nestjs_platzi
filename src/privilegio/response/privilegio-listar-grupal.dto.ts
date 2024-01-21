@@ -1,4 +1,4 @@
 export class PrivilegioListarGrupalDto {
-  privilegio_id: string;
-  nombre: string;
+   privilegio_id: string;
+   nombre: string;
 }

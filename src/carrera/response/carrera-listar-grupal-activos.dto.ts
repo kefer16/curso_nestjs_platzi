@@ -1,4 +1,4 @@
 export class CarreraListarGrupalActivosDto {
-  carrera_id: string;
-  nombre: string;
+   carrera_id: string;
+   nombre: string;
 }

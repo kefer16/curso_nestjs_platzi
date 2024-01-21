@@ -1,4 +1,4 @@
 export class OperadorListarGrupalDto {
-  operador_id: string;
-  nombre: string;
+   operador_id: string;
+   nombre: string;
 }
